@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Bsagroupproject</string>
+    <string name="hello"> Hey There,</string>
+    <string name="welcome"> Welcome Back </string>
+    <string name="create_an_account"> Create an account </string>
+    <string name="user_name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="hide_password">Hide Password</string>
+    <string name="show_password">Show Password</string>
+    <string name="check_box"> CheckBox</string>
+    <string name="register" > Register </string>
+    <string name="login" > LogIn </string>
+    <string name="go_to_login" >Already have an account ? LogIn</string>
+    <string name="forgot_password" > Forgot Your Password ? </string>
+</resources>
