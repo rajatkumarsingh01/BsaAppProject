@@ -1,5 +1,6 @@
 package com.example.bsagroupproject.screens
 
+import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -14,9 +15,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.bsagroupproject.HomeActivity
 import com.example.bsagroupproject.R
 import com.example.bsagroupproject.components.ButtonComponent
 import com.example.bsagroupproject.components.ClickableLoginTextComponent
@@ -36,6 +39,7 @@ fun LogInScreen(){
         .background(Color.White)
         .padding(28.dp)
     ) {
+        val context= LocalContext.current
         Column {
            NormalText(value = stringResource(id = R.string.hello))
             NormalTextHeading(value = stringResource(id = R.string.welcome))
@@ -53,7 +57,10 @@ fun LogInScreen(){
             Spacer(modifier = Modifier.height(12.dp))
             UnderLinedText(value = stringResource(id = R.string.forgot_password))
             Spacer(modifier = Modifier.height(150.dp))
-            ButtonComponent(value = stringResource(id = R.string.login))
+            ButtonComponent(value = stringResource(id = R.string.login), onButtonClicked = {
+                context.startActivity(Intent(context,HomeActivity::class.java))
+
+            })
             Spacer(modifier = Modifier.height(8.dp))
             DividerTextComponents()
 

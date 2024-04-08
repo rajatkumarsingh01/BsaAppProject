@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -25,6 +26,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.compose.rememberNavController
 import com.example.bsagroupproject.components.BottomNav
+import com.example.bsagroupproject.components.NavigationForHome
 import com.example.bsagroupproject.ui.theme.BsagroupprojectTheme
 
 class HomeActivity : ComponentActivity() {
@@ -36,12 +38,10 @@ class HomeActivity : ComponentActivity() {
                Surface (color = Color.White,
                    modifier =Modifier.fillMaxSize()
                    ){
+                   //nav controller
+                   val navController= rememberNavController()
                    Scaffold(
-                       topBar = {
-                           TopAppBar(
-                               title = { Text(text = "Home") }
-                           )
-                       },
+
                        bottomBar = {
                            //Items in bottom navigation Bar
                            val bottomBarItems= listOf(
@@ -64,8 +64,7 @@ class HomeActivity : ComponentActivity() {
                                    unselectedIcon = painterResource(id = R.drawable.filled_profile)
                                )
                            )
-                           //nav controller
-                           val navController= rememberNavController()
+
                            BottomNav(items = bottomBarItems, navController = navController,
                                onItemClicked = {item ->
                                    when(item.route){
@@ -84,22 +83,26 @@ class HomeActivity : ComponentActivity() {
                            )
                        }
                    ) { innerPadding->
-                       Column(modifier = Modifier.fillMaxSize(),
-                           horizontalAlignment = Alignment.CenterHorizontally,
-                           verticalArrangement = Arrangement.Center
-                           ) {
-                           Text(text = "Hey This home activity ")
-
+                       Surface(
+                           modifier = Modifier
+                               .padding(innerPadding)
+                               .fillMaxSize()
+                       ) {
+                           NavigationForHome(
+                               navHostController = navController,
+                               )
                        }
-                       
-                   }
+//                       Column(modifier = Modifier.fillMaxSize()
+//                           .padding(innerPadding),
+//                           horizontalAlignment = Alignment.CenterHorizontally,
+//                           verticalArrangement = Arrangement.Center
+//                           ) {
+//                           Text(text = "Hey This home activity ")
 
-                   
+//                       }
+                   }
                }
            }
-
-
-
        }
         
     }

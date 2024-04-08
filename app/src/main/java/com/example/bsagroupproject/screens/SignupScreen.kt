@@ -1,5 +1,6 @@
 package com.example.bsagroupproject.screens
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,7 @@ fun SignUpScreen(){
 
   ) {
       Column(modifier = Modifier.fillMaxSize()) {
+          val context= LocalContext.current
           NormalText(value = stringResource(id = R.string.hello))
           NormalTextHeading(value = stringResource(id =R.string.create_an_account))
           Spacer(modifier = Modifier.height(60.dp))
@@ -60,7 +63,9 @@ fun SignUpScreen(){
           
           Spacer(modifier = Modifier.height(60.dp))
 
-          ButtonComponent(value= stringResource(id = R.string.register))
+          ButtonComponent(value= stringResource(id = R.string.register), onButtonClicked = {
+
+          })
           Spacer(modifier = Modifier.height(20.dp))
           DividerTextComponents()
 

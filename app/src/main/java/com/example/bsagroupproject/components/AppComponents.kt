@@ -1,6 +1,7 @@
 package com.example.bsagroupproject.components
 
 import android.util.Log
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
@@ -60,12 +62,20 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.bsagroupproject.BottomNavigationItem
 import com.example.bsagroupproject.R
+import com.example.bsagroupproject.screens.AppointScreen
+import com.example.bsagroupproject.screens.ChatScreen
+import com.example.bsagroupproject.screens.HomeScreen
 import com.example.bsagroupproject.ui.theme.Primary
 import com.example.bsagroupproject.ui.theme.PurpleGrey80
 import com.example.bsagroupproject.ui.theme.Secondary
@@ -250,8 +260,8 @@ Row(modifier = Modifier
 }
 
 @Composable
-fun ButtonComponent(value:String){
-    Button(onClick = { /*TODO*/ },
+fun ButtonComponent(value:String,onButtonClicked:()->Unit){
+    Button(onClick = onButtonClicked,
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp),
@@ -415,3 +425,51 @@ fun BottomNav(
     }
     
 }
+
+@Composable
+fun NavigationForHome(
+    navHostController: NavHostController
+
+) {
+    NavHost(navController = navHostController, startDestination = "Home") {
+        composable("Home") {
+            HomeScreen()
+        }
+
+        composable("Chat") {
+            val navController = rememberNavController()
+            ChatScreen(navController)
+        }
+
+        composable("Appoint") {
+            AppointScreen()
+        }
+
+    }
+}
+
+@Composable
+fun IconComponentImageVector(
+    icon: ImageVector,
+    modifier: Modifier = Modifier,
+    tint: Color = Color.Unspecified,
+    size: Dp
+) {
+    Icon(imageVector = icon, contentDescription = "", modifier = modifier.size(size), tint = tint)
+}
+
+@Composable
+fun IconComponentDrawable(
+    @DrawableRes icon: Int,
+    modifier: Modifier = Modifier,
+    tint: Color = Color.Unspecified,
+    size: Dp
+) {
+    Icon(
+        painter = painterResource(id = icon),
+        contentDescription = "",
+        modifier = modifier.size(size),
+        tint = tint
+    )
+}
+

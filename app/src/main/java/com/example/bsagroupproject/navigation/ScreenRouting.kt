@@ -12,11 +12,7 @@ sealed class Screen(){
 
 object ScreenRouting{
     var currentScreen:MutableState<Screen> = mutableStateOf(Screen.SignUpScreen)
-    lateinit var navController: NavController
 
-    fun initialize(navController: NavController){
-        this.navController=navController
-    }
     //navigate to other screen
     fun navigateTo(destination:Screen){
         currentScreen.value = destination
