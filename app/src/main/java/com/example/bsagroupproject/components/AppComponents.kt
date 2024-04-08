@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
@@ -23,6 +24,9 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
@@ -34,9 +38,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -56,6 +62,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.bsagroupproject.BottomNavigationItem
 import com.example.bsagroupproject.R
 import com.example.bsagroupproject.ui.theme.Primary
 import com.example.bsagroupproject.ui.theme.PurpleGrey80
@@ -146,6 +155,7 @@ fun MyTextField(labelValue:String,imageVector: ImageVector){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyPasswordField(labelValue:String,imageVector: ImageVector){
+    val localFocusManager= LocalFocusManager.current
 
     val password= remember {
         mutableStateOf("") }
@@ -174,6 +184,12 @@ fun MyPasswordField(labelValue:String,imageVector: ImageVector){
 
         ) ,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        singleLine = true,
+        keyboardActions = KeyboardActions {
+               localFocusManager.clearFocus()
+        },
+
+
         value = password.value,
         onValueChange ={ newValue->
             password.value=newValue
@@ -341,4 +357,61 @@ fun UnderLinedText(value: String){
         textAlign = TextAlign.Center,
         textDecoration = TextDecoration.Underline
     )
+}
+
+//Bottom Navigation Bar for Home Screen 
+@Composable
+fun BottomNav(
+    items:List<BottomNavigationItem>,
+    navController: NavController,
+    onItemClicked:(BottomNavigationItem) ->Unit
+){
+    NavigationBar(
+        modifier = Modifier.shadow(8.dp),
+        containerColor = MaterialTheme.colorScheme.onPrimary
+    ) {
+        //to remember back state 
+        val backStackEntry=navController.currentBackStackEntryAsState()
+        
+        items.forEachIndexed { index, bottomNavigationItem ->
+            NavigationBarItem(
+                selected =bottomNavigationItem.route ==backStackEntry.value?.destination?.route,
+                onClick = {
+                          onItemClicked(bottomNavigationItem)
+                },
+                label = {
+                        if (bottomNavigationItem.route == backStackEntry.value?.destination?.route){
+                            Text(text = bottomNavigationItem.title,
+                                fontWeight = FontWeight(900),
+                                color = MaterialTheme.colorScheme.primary
+                                )
+                        }else{
+                            Text(
+                                text = bottomNavigationItem.title,
+                                fontWeight = FontWeight(700),
+                                color = Color.Gray
+                            )
+                        }
+                },
+                alwaysShowLabel = true,
+                icon = {
+                    if (bottomNavigationItem.route==backStackEntry.value?.destination?.route){
+                      Icon(
+                          bottomNavigationItem.selectedIcon,
+                          contentDescription = bottomNavigationItem.title,
+                          tint = MaterialTheme.colorScheme.secondary
+                      )
+                    }else{
+                        Icon(
+                            painter = bottomNavigationItem.unselectedIcon,
+                            contentDescription = bottomNavigationItem.title,
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                }
+            )
+        }
+        
+    }
+    
 }

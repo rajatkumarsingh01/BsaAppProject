@@ -60,12 +60,7 @@ fun LogInScreen(){
             ClickableLoginTextComponent(tryingToLogin = false,onTextSelected ={
                 ScreenRouting.navigateTo(Screen.SignUpScreen)
             } )
-
-
-
-
         }
-
     }
     BackHandler {
         ScreenRouting.navigateTo(Screen.SignUpScreen)

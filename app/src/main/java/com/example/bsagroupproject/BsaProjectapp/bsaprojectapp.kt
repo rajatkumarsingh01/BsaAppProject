@@ -16,18 +16,14 @@ fun BSAapp(){
     Surface (modifier = Modifier.fillMaxSize(),
         color = Color.White
     ){
-        Crossfade(targetState = ScreenRouting.currentScreen) {currentState->
+        Crossfade(targetState = ScreenRouting.currentScreen, label = "") { currentState->
             when(currentState.value){
                 is Screen.SignUpScreen-> {
                     SignUpScreen()}
                 is Screen.LogInScreen->{
                     LogInScreen()
                 }
-
             }
-
-
         }
-        SignUpScreen()
     }
 }
