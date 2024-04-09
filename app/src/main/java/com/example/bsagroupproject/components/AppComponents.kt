@@ -15,7 +15,6 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -30,9 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -48,11 +45,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -71,9 +66,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.bsagroupproject.BottomNavigationItem
+import com.example.bsagroupproject.data.BottomNavigationItem
 import com.example.bsagroupproject.R
 import com.example.bsagroupproject.screens.AppointScreen
+import com.example.bsagroupproject.screens.ChatHomeScreen
 import com.example.bsagroupproject.screens.ChatScreen
 import com.example.bsagroupproject.screens.HomeScreen
 import com.example.bsagroupproject.ui.theme.Primary
@@ -436,13 +432,17 @@ fun NavigationForHome(
             HomeScreen()
         }
 
-        composable("Chat") {
-            val navController = rememberNavController()
-            ChatScreen(navController)
+        composable("Chat_Home") {
+            ChatHomeScreen(navHostController = navHostController)
+            
         }
 
         composable("Appoint") {
             AppointScreen()
+        }
+
+        composable("Chat_Screen"){
+            ChatScreen(navHostController = navHostController)
         }
 
     }

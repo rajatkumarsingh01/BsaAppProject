@@ -6,50 +6,12 @@ import androidx.annotation.DrawableRes
 import com.example.bsagroupproject.R
 
 
+
 data class Person(
     val id:Int=0,
-    val name: String? =" ",
+    val name: String? ="",
     @DrawableRes val icon:Int= R.drawable.icon_facebook
 ):Parcelable {
-
-    val personList = listOf(
-        Person(
-            1,
-            "Rajat",
-            R.drawable.icon_facebook
-        ),
-        Person(
-            2,
-            "Rohit",
-            R.drawable.icon_instagram
-        ),
-        Person(
-            3,
-            "Chirag",
-            R.drawable.icon_facebook
-        ),
-        Person(
-            4,
-            "Sourabh",
-            R.drawable.icon_instagram
-        ),
-        Person(
-            5,
-            "Roshini",
-            R.drawable.icon_facebook
-        ),
-        Person(
-            6,
-            "Kaushik",
-            R.drawable.ic_launcher_foreground
-        ),
-        Person(
-            7,
-            "Ayesha",
-            R.drawable.chat_bubble_outline_badged
-        ),
-    )
-
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
         parcel.readString(),
@@ -77,3 +39,44 @@ data class Person(
         }
     }
 }
+
+
+val personList = listOf(
+    Person(
+        1,
+        "Rajat",
+        R.drawable.icon_facebook
+    ),
+    Person(
+        2,
+        "Rohit",
+        R.drawable.icon_instagram
+    ),
+    Person(
+        3,
+        "Chirag",
+        R.drawable.icon_facebook
+    ),
+    Person(
+        4,
+        "Sourabh",
+        R.drawable.icon_instagram
+    ),
+    Person(
+        5,
+        "Roshini",
+        R.drawable.icon_facebook
+    ),
+    Person(
+        6,
+        "Kaushik",
+        R.drawable.ic_launcher_foreground
+    ),
+    Person(
+        7,
+        "Ayesha",
+        R.drawable.chat_bubble_outline_badged
+    ),
+)
+
+
