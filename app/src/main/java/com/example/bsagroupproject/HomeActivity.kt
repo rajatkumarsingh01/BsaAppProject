@@ -3,30 +3,18 @@ package com.example.bsagroupproject
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.contentColorFor
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.compose.rememberNavController
 import com.example.bsagroupproject.components.BottomNav
 import com.example.bsagroupproject.components.NavigationForHome
+import com.example.bsagroupproject.data.BottomNavigationItem
 import com.example.bsagroupproject.ui.theme.BsagroupprojectTheme
 
 class HomeActivity : ComponentActivity() {
@@ -52,8 +40,8 @@ class HomeActivity : ComponentActivity() {
                                    unselectedIcon = painterResource(id = R.drawable.outline_home)
                                ),
                                BottomNavigationItem(
-                                   title = "Chat",
-                                   route = "Chat",
+                                   title = "Chat_Home",
+                                   route = "Chat_Home",
                                    selectedIcon = painterResource(id = R.drawable.chat_bubble_outline_badged),
                                    unselectedIcon = painterResource(id = R.drawable.comment_circle_chat_message)
                                ),
@@ -72,11 +60,14 @@ class HomeActivity : ComponentActivity() {
                                            // Navigate to Home screen
                                            navController.navigate("home")
                                        }
-                                       "Chat" -> {
-                                           navController.navigate("chat")
+                                       "Chat_Home" -> {
+                                           navController.navigate("chat_home")
                                        }
                                        "Appoint" -> {
                                            navController.navigate("appoint")
+                                       }
+                                       "Chat_Screen" ->{
+                                           navController.navigate("chat_screen")
                                        }
                                    }
                                }

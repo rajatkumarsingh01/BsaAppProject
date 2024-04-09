@@ -15,4 +15,8 @@
     <string name="forgot_password"> Forgot Your Password ? </string>
     <string name="online">Online</string>
     <string name="type_message">Type Your Message</string>
+    <string name="jayant"> Jayant </string>
+    <string name="time_12_23_pm">12:23 Pm</string>
+    <string name="add_story">Add Story</string>
+    <string name="last_message">Okay Last message</string>
 </resources>

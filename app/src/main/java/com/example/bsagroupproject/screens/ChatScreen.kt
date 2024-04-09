@@ -72,7 +72,11 @@ fun ChatScreen(navHostController: NavHostController){
         .background(Color.Black)
 
     ){
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier
+            .padding(8.dp)
+            .fillMaxSize()
+            .padding(start = 8.dp , end = 8.dp , top = 8.dp , bottom = 0.dp)
+        ) {
             UserNameRow(
                 person = data,
                 modifier = Modifier.padding(top = 60.dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
