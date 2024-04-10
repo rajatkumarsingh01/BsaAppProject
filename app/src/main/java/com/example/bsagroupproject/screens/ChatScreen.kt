@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -28,6 +29,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +53,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.bsagroupproject.R
@@ -58,15 +61,18 @@ import com.example.bsagroupproject.components.IconComponentDrawable
 import com.example.bsagroupproject.components.IconComponentImageVector
 import com.example.bsagroupproject.data.Chat
 import com.example.bsagroupproject.data.Person
+
 import com.example.bsagroupproject.data.chatList
+import com.example.bsagroupproject.model.ChatViewModel
 
 
 @Composable
-fun ChatScreen(navHostController: NavHostController){
+fun ChatScreen(navHostController: NavHostController,chatViewModel: ChatViewModel){
     var message by remember {
         mutableStateOf(" ") }
-    val data=
-        navHostController.previousBackStackEntry?.savedStateHandle?.get<Person>("data")?:Person()
+    val data by  chatViewModel.selectedPersonProfile.collectAsState()
+    val messageList by chatViewModel.messageList.collectAsState()
+
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Color.Black)
@@ -75,7 +81,7 @@ fun ChatScreen(navHostController: NavHostController){
         Column(modifier = Modifier
             .padding(8.dp)
             .fillMaxSize()
-            .padding(start = 8.dp , end = 8.dp , top = 8.dp , bottom = 0.dp)
+            .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 0.dp)
         ) {
             UserNameRow(
                 person = data,
@@ -232,17 +238,17 @@ fun UserNameRow(
         horizontalArrangement = Arrangement.SpaceBetween
     ){
         Row {
-            IconComponentDrawable(icon = person.icon, size =42.dp )
+          Icon(imageVector = Icons.Filled.Person, contentDescription = "userImage")
             Spacer(modifier = Modifier.width(8.dp))
             Column {
-                person.name?.let {
-                    Text(text = it,
+
+                    Text(text = person.userName,
                         style = TextStyle(
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp
                         ))
-                }
+
                 Text(text = stringResource(id = R.string.online),
                     style = TextStyle(
                         color = Color.White,
@@ -261,7 +267,7 @@ fun UserNameRow(
 @Composable
 private fun PreviewChatScreen() {
     val navController = rememberNavController()
-    ChatScreen(navController)
+    ChatScreen(navController, chatViewModel = viewModel())
 }
 
 

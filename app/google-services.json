@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "635034834872",
+    "project_id": "bsagroupproject",
+    "storage_bucket": "bsagroupproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635034834872:android:a99c871754d8e57a6e614d",
+        "android_client_info": {
+          "package_name": "com.example.bsagroupproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAueZrcXFfCXM5w79WduM-HAV1epVmN3DI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

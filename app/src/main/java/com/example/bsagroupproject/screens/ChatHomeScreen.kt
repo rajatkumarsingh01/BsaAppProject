@@ -1,6 +1,8 @@
 package com.example.bsagroupproject.screens
 
+
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -23,9 +25,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -50,47 +55,49 @@ import com.example.bsagroupproject.components.IconComponentDrawable
 import com.example.bsagroupproject.components.IconComponentImageVector
 import com.example.bsagroupproject.data.Chat
 import com.example.bsagroupproject.data.Person
-import com.example.bsagroupproject.data.personList
+import com.example.bsagroupproject.model.ChatViewModel
 
 
 @Composable
 fun ChatHomeScreen(
-    navHostController: NavHostController
-){
-
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.Black)
-    ){
-        Column(modifier = Modifier
+    navHostController: NavHostController,
+    chatViewModel: ChatViewModel
+) {
+    val personList by chatViewModel.personList.collectAsState()
+    Box(
+        modifier = Modifier
             .fillMaxSize()
-            .padding(top = 18.dp)
-        ) {
-            HeaderOrViewStory()
-
-            Box(modifier = Modifier
+            .background(Color.Black)
+    ) {
+        Column(
+            modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    Color.White, RoundedCornerShape(
-                        topStart = 30.dp, topEnd = 30.dp
+                .padding(top = 18.dp)
+        ) {
+            HeaderOrViewStory(personList)
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Color.White, RoundedCornerShape(
+                            topStart = 30.dp, topEnd = 30.dp
+                        )
                     )
-                )
-            ){
+            ) {
                 BottomSheetSwipeUp(
-                    modifier= Modifier
+                    modifier = Modifier
                         .align(Alignment.TopCenter)
                         .padding(top = 15.dp)
                 )
-                LazyColumn(modifier = Modifier.padding(
-                    bottom = 15.dp ,top=30.dp
-                )) {
-                    items(personList,key = {it.id}){
-                        UserEachRow(person=it){
-                            navHostController.currentBackStackEntry?.savedStateHandle?.set(
-                                "data",
-                                it
-                            )
-
+                LazyColumn(
+                    modifier = Modifier.padding(
+                        bottom = 15.dp, top = 30.dp
+                    )
+                ) {
+                    items(personList) {
+                        UserEachRow(it) {
+                         chatViewModel.updatePersonProfile(it)
                             navHostController.navigate("Chat_Screen")
                         }
                     }
@@ -99,18 +106,18 @@ fun ChatHomeScreen(
 
         }
     }
-
 }
 
+
 @Composable
-fun ViewStoryLayout() {
+fun ViewStoryLayout(personList: List<Person>) {
     LazyRow(modifier = Modifier.padding(vertical = 20.dp)) {
         item {
             AddStoryLayout()
             Spacer(modifier = Modifier.width(10.dp))
         }
 
-        items(personList, key = { it.id }) {
+        items(personList) {
             UserStory(person = it)
         }
     }
@@ -130,16 +137,16 @@ fun UserStory(
                 .size(60.dp),
             contentAlignment = Alignment.Center
         ) {
-            IconComponentDrawable(icon = person.icon, size = 65.dp)
+            Image(imageVector = Icons.Filled.Person, contentDescription = "profile_image")
         }
         Spacer(modifier = Modifier.height(8.dp))
-        person.name?.let {
-            Text(
-                text = it, style = TextStyle(
-                    color = Color.White, fontSize = 13.sp,
-                ), modifier = Modifier.align(CenterHorizontally)
-            )
-        }
+
+        Text(
+            text = person.userName, style = TextStyle(
+                color = Color.White, fontSize = 13.sp,
+            ), modifier = Modifier.align(CenterHorizontally)
+        )
+
 
     }
 }
@@ -184,58 +191,61 @@ fun AddStoryLayout(
 @Composable
 fun UserEachRow(
     person: Person,
-    onClick: () -> Unit) {
+    onClick: () -> Unit
+) {
 
     Box(modifier = Modifier
         .fillMaxWidth()
         .background(Color.White)
         .noRippleEffect { onClick() }
         .padding(horizontal = 20.dp, vertical = 5.dp)
-    ){
+    ) {
         Column {
-            Row (modifier = Modifier
-                .fillMaxWidth(),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                IconComponentDrawable(icon = person.icon, size =50.dp )
+            ) {
 
+                Image(imageVector = Icons.Filled.Person, contentDescription = "profile_image")
                 Spacer(modifier = Modifier.width(10.dp))
                 Column {
-                    person.name?.let {
-                        Text(
-                            text = it, style = TextStyle(
-                                color = Color.Black, fontSize = 15.sp, fontWeight = FontWeight.Bold
-                            )
+
+                    Text(
+                        text = person.userName, style = TextStyle(
+                            color = Color.Black, fontSize = 15.sp, fontWeight = FontWeight.Bold
                         )
-                        Spacer(modifier = Modifier.height(5.dp))
-                        Text(
-                            text = stringResource(id = R.string.last_message), style = TextStyle(
-                                color = Gray, fontSize = 14.sp
-                            )
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Text(
+                        text = stringResource(id = R.string.last_message), style = TextStyle(
+                            color = Gray, fontSize = 14.sp
                         )
-                    }
+                    )
+
                 }
 
-                Text(text = stringResource(id = R.string.time_12_23_pm),style= TextStyle(
-                    color = Gray, fontSize = 12.sp
-                )
+                Text(
+                    text = stringResource(id = R.string.time_12_23_pm), style = TextStyle(
+                        color = Gray, fontSize = 12.sp
+                    )
                 )
 
-                
+
             }
             Spacer(modifier = Modifier.height(15.dp))
-            Divider( modifier = Modifier.fillMaxWidth(), thickness = 1.dp , color = White)
+            Divider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = White)
         }
     }
 
 }
 
 @SuppressLint("UnrememberedMutableInteractionSource", "ModifierFactoryUnreferencedReceiver")
-private fun Modifier.noRippleEffect(onClick: () -> Unit)=composed{
+private fun Modifier.noRippleEffect(onClick: () -> Unit) = composed {
     clickable(
         interactionSource = MutableInteractionSource(),
         indication = null
-    ){
+    ) {
         onClick()
     }
 
@@ -247,41 +257,42 @@ private fun Modifier.noRippleEffect(onClick: () -> Unit)=composed{
 fun BottomSheetSwipeUp(
     modifier: Modifier
 ) {
-    Box(modifier = modifier
-        .background(
-            Color.Gray,
-            RoundedCornerShape(90.dp)
-        )
-        .width(90.dp)
-        .height(5.dp)
+    Box(
+        modifier = modifier
+            .background(
+                Color.Gray,
+                RoundedCornerShape(90.dp)
+            )
+            .width(90.dp)
+            .height(5.dp)
     )
 
 }
 
 @Composable
-fun HeaderOrViewStory() {
-    Column (
+fun HeaderOrViewStory(personList: List<Person>) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 20.dp, top = 20.dp)
-    ){
+    ) {
         Header()
-        ViewStoryLayout()
+        ViewStoryLayout(personList)
     }
 }
 
 @Composable
 fun Header() {
-   val annotatedString= buildAnnotatedString {
-       withStyle(
-           style = SpanStyle(
-               color=Color.White,
-               fontSize = 20.sp,
-               fontWeight = FontWeight.W300
-           )
-       ){
-           append(stringResource(R.string.jayant))
-       }
-   }
+    val annotatedString = buildAnnotatedString {
+        withStyle(
+            style = SpanStyle(
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.W300
+            )
+        ) {
+            append(stringResource(R.string.jayant))
+        }
+    }
     Text(text = annotatedString)
 }

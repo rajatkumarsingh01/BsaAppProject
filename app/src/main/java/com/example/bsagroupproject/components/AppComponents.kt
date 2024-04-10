@@ -68,9 +68,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.bsagroupproject.data.BottomNavigationItem
 import com.example.bsagroupproject.R
+import com.example.bsagroupproject.model.LoginViewModel
 import com.example.bsagroupproject.screens.AppointScreen
 import com.example.bsagroupproject.screens.ChatHomeScreen
-import com.example.bsagroupproject.screens.ChatScreen
 import com.example.bsagroupproject.screens.HomeScreen
 import com.example.bsagroupproject.ui.theme.Primary
 import com.example.bsagroupproject.ui.theme.PurpleGrey80
@@ -118,7 +118,10 @@ fun NormalTextHeading(value: String){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyTextField(labelValue:String,imageVector: ImageVector){
+fun MyTextField(labelValue:String,imageVector: ImageVector,
+                onTextSelected: (String) -> Unit,
+                errorStatus:Boolean=false
+                ){
 
     val textValue= remember {
         mutableStateOf("") }
@@ -143,9 +146,12 @@ fun MyTextField(labelValue:String,imageVector: ImageVector){
 
         ) ,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        singleLine = true ,
+        maxLines = 1,
         value = textValue.value,
         onValueChange ={ newValue->
                 textValue.value=newValue
+            onTextSelected(newValue)
         },
         leadingIcon = {
             Icon(
@@ -153,14 +159,17 @@ fun MyTextField(labelValue:String,imageVector: ImageVector){
                 contentDescription = "Icon"
             )
         },
-        singleLine = true ,
-        maxLines = 1
+        isError = !errorStatus,
         )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyPasswordField(labelValue:String,imageVector: ImageVector){
+fun MyPasswordField(
+    labelValue:String,imageVector: ImageVector,
+                    onTextSelected: (String) -> Unit,
+                    errorStatus:Boolean=false
+){
     val localFocusManager= LocalFocusManager.current
 
     val password= remember {
@@ -169,8 +178,6 @@ fun MyPasswordField(labelValue:String,imageVector: ImageVector){
     val passwordVisible= remember {
         mutableStateOf(false)
     }
-
-
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
@@ -199,6 +206,7 @@ fun MyPasswordField(labelValue:String,imageVector: ImageVector){
         value = password.value,
         onValueChange ={ newValue->
             password.value=newValue
+            onTextSelected(newValue)
         },
         leadingIcon = {
             Icon(
@@ -219,7 +227,9 @@ fun MyPasswordField(labelValue:String,imageVector: ImageVector){
 
         },
         visualTransformation = if(passwordVisible.value) VisualTransformation.None else
-                      PasswordVisualTransformation()
+                      PasswordVisualTransformation() ,
+
+        isError = !errorStatus
     )
 }
 
@@ -256,13 +266,19 @@ Row(modifier = Modifier
 }
 
 @Composable
-fun ButtonComponent(value:String,onButtonClicked:()->Unit){
-    Button(onClick = onButtonClicked,
+fun ButtonComponent(value:String, onButtonClicked:  ()->Unit, isEnabled:Boolean=false
+){
+    Button(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp),
+        onClick = {
+            onButtonClicked()
+        },
         contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
+        colors = ButtonDefaults.buttonColors(Color.Transparent),
+        shape= RoundedCornerShape(50.dp),
+        enabled = isEnabled
         ) {
         Box(modifier = Modifier
             .fillMaxWidth()
@@ -365,88 +381,8 @@ fun UnderLinedText(value: String){
     )
 }
 
-//Bottom Navigation Bar for Home Screen 
-@Composable
-fun BottomNav(
-    items:List<BottomNavigationItem>,
-    navController: NavController,
-    onItemClicked:(BottomNavigationItem) ->Unit
-){
-    NavigationBar(
-        modifier = Modifier.shadow(8.dp),
-        containerColor = MaterialTheme.colorScheme.onPrimary
-    ) {
-        //to remember back state 
-        val backStackEntry=navController.currentBackStackEntryAsState()
-        
-        items.forEachIndexed { index, bottomNavigationItem ->
-            NavigationBarItem(
-                selected =bottomNavigationItem.route ==backStackEntry.value?.destination?.route,
-                onClick = {
-                          onItemClicked(bottomNavigationItem)
-                },
-                label = {
-                        if (bottomNavigationItem.route == backStackEntry.value?.destination?.route){
-                            Text(text = bottomNavigationItem.title,
-                                fontWeight = FontWeight(900),
-                                color = MaterialTheme.colorScheme.primary
-                                )
-                        }else{
-                            Text(
-                                text = bottomNavigationItem.title,
-                                fontWeight = FontWeight(700),
-                                color = Color.Gray
-                            )
-                        }
-                },
-                alwaysShowLabel = true,
-                icon = {
-                    if (bottomNavigationItem.route==backStackEntry.value?.destination?.route){
-                      Icon(
-                          bottomNavigationItem.selectedIcon,
-                          contentDescription = bottomNavigationItem.title,
-                          tint = MaterialTheme.colorScheme.secondary
-                      )
-                    }else{
-                        Icon(
-                            painter = bottomNavigationItem.unselectedIcon,
-                            contentDescription = bottomNavigationItem.title,
-                            tint = MaterialTheme.colorScheme.secondary
-                        )
-                    }
-                }
-            )
-        }
-        
-    }
-    
-}
 
-@Composable
-fun NavigationForHome(
-    navHostController: NavHostController
 
-) {
-    NavHost(navController = navHostController, startDestination = "Home") {
-        composable("Home") {
-            HomeScreen()
-        }
-
-        composable("Chat_Home") {
-            ChatHomeScreen(navHostController = navHostController)
-            
-        }
-
-        composable("Appoint") {
-            AppointScreen()
-        }
-
-        composable("Chat_Screen"){
-            ChatScreen(navHostController = navHostController)
-        }
-
-    }
-}
 
 @Composable
 fun IconComponentImageVector(
