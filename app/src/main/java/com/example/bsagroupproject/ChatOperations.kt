@@ -18,17 +18,16 @@ class ChatOperations {
     private val currentUser = auth.currentUser  // for current user
     private val database = Firebase.database.reference
 
-    fun writeUserData(userData: UserData){
+    fun writeUserData(userData: UserData) {
 
         currentUser?.let { user -> // get the current user
-                database.child("user").child(user.uid)
-                    .setValue(userData).addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            Log.d("userData ","userData return successfully ")
+            database.child("user").child(user.uid).setValue(userData).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Log.d("userData ", "userData return successfully ")
 
-                        } else {
-                            Log.d("userData ","problem wrting data  ")
-                        }
+                } else {
+                    Log.d("userData ", "problem wrting data  ")
+                }
 
             }
         }
@@ -42,9 +41,11 @@ class ChatOperations {
                 if (snapshot.exists()) {
                     for (data in snapshot.children) {
                         val personList = data.getValue(Person::class.java)
-                        if (personList != null && personList.userID !=currentUser?.uid)
-                            listOfPerson.add(personList)
+                        if (personList != null && personList.userID != currentUser?.uid) listOfPerson.add(
+                            personList
+                        )
                     }
+                    Log.d("inisde_person", listOfPerson.toString())
                     person(listOfPerson)
                 }
             }
@@ -56,38 +57,63 @@ class ChatOperations {
         })
     }
 
-    fun sendMessage(message: String,receiverUID:String){
+    fun sendMessage(message: String, receiverUID: String,commonMessageId:String) {
+     //   val commonMessageId = currentUser?.uid + receiverUID
 
         currentUser?.let { user ->
             // get the current user chat
-            val messageKey = database.child("messages").push().key // generate unique key for message
-            val messageData = Message(message, user.uid, receiverUID, System.currentTimeMillis())
 
+            val messageData = Message(message, user.uid, receiverUID, false)
+            //saving message key to sender node
+
+            database.child("user").child(currentUser.uid).child("chat").child(commonMessageId)
+                .setValue(commonMessageId).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("sendMessage", "Message sent successfully")
+                    } else {
+                        Log.d("sendMessage", "Problem sending message")
+                    }
+                }
+
+            //saving messages to receiver node
+            database.child("user").child(receiverUID).child("chat").child(commonMessageId)
+                .setValue(commonMessageId).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("sendMessage", "Message received successfully")
+                    } else {
+                        Log.d("sendMessage", "Problem receiving  message")
+                    }
+                }
+
+            val messageKey =
+                database.child("messages").push().key // generate unique key for message
             if (messageKey != null) {
-                database.child("messages").child(messageKey)
-                    .setValue(messageData).addOnCompleteListener { task ->
+                database.child("messages").child(commonMessageId).child(messageKey)
+                    .setValue(messageData)
+                    .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Log.d("sendMessage", "Message sent successfully")
                         } else {
                             Log.d("sendMessage", "Problem sending message")
                         }
                     }
-                }
+            }
         }
+
     }
 
-    fun receiveMessages(receiverUID: String, listener: (List<Message>) -> Unit) {
-        database.child("messages").addValueEventListener(object : ValueEventListener {
+    fun receiveMessages(messageID: String, listener: (List<Message>) -> Unit) {
+        database.child("messages").child(messageID).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val messages = mutableListOf<Message>()
                 if (snapshot.exists()) {
                     for (data in snapshot.children) {
                         val message = data.getValue(Message::class.java)
-                        if (message != null && (message.senderUID == currentUser?.uid && message.receiverUID == receiverUID) ||
-                            (message?.senderUID == receiverUID && message.receiverUID == currentUser?.uid)) {
-                            messages.add(message)
+                        if (message != null) {
+                          messages.add(message)
                         }
                     }
+                    Log.d("updated_message",messages.toString())
                     listener(messages)
                 }
             }
@@ -97,5 +123,36 @@ class ChatOperations {
             }
         })
     }
-}
+
+    fun getMessageNode(
+        chatId:(List<String>) ->Unit
+    ){
+
+        currentUser?.let {
+            database.child("user").child(it.uid).child("chat").addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val listOfChat= mutableListOf<String>()
+                    if (snapshot.exists()) {
+                        for (data in snapshot.children) {
+                            val personList = data.getValue(String::class.java)
+                            if (personList != null) {
+                                listOfChat.add(personList)
+                            }
+                        }
+                        Log.d("inside_get_message_node", listOfChat.toString())
+                        chatId(listOfChat)
+                    }else{
+                        chatId(listOfChat)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("under_get_message_node", error.message)
+                }
+
+            })
+        }
+        }
+
+    }
 

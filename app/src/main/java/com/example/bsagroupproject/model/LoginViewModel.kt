@@ -81,8 +81,6 @@ class LoginViewModel : ViewModel() {
                     loginInProgress.value = false
                     _logInSuccess.value=true
                     Log.d("value","${logInSuccess.value}")
-
-
                 }
 
             }

@@ -26,12 +26,21 @@ import com.example.bsagroupproject.BsaProjectapp.BSAapp
 import com.example.bsagroupproject.model.LoginViewModel
 import com.example.bsagroupproject.ui.theme.BsagroupprojectTheme
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
     private val loginViewModel by lazy {
         ViewModelProvider(this)[LoginViewModel::class.java]
+    }
+    val currentUser=FirebaseAuth.getInstance().currentUser
 
-
+    override fun onStart() {
+        super.onStart()
+        if (currentUser!= null){
+            Log.d("under_onstart","email=${currentUser.email}")
+            startActivity(Intent(this,HomeActivity::class.java))
+            finish()
+        }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
