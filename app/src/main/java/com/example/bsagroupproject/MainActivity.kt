@@ -44,9 +44,7 @@ class MainActivity : ComponentActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        FirebaseApp.initializeApp(this)
-
+     //   FirebaseApp.initializeApp(this)
         setContent {
             val logInSuccess by loginViewModel.logInSuccess.collectAsState()
             if(logInSuccess){

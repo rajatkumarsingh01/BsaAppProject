@@ -76,13 +76,19 @@ fun ChatScreen(navHostController: NavHostController, chatViewModel: ChatViewMode
     val context = LocalContext.current
     val chatId by chatViewModel.chatId.collectAsState()
 
-    // Fetch messages when the screen is shown
-    chatViewModel.getChatNode {
+    LaunchedEffect (data){
+        Log.d("data","current_Profile_change")
+        chatViewModel.getChatNode {
+            //chatViewModel.setChatId(data.userID)
+            Log.d("chat_id",chatId.toString())
+        }
+
+    }
+    LaunchedEffect(chatId,messageList) {
+        // Fetch messages when the screen is shown
         chatViewModel.getMessages(chatId)
         Log.d("messages", messageList.toString())
     }
-
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -121,7 +127,6 @@ fun ChatScreen(navHostController: NavHostController, chatViewModel: ChatViewMode
                     reverseLayout = true,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    //here chatList -> messageList
                     items(messageList.reversed()) { message ->
                         ChatRow(message)
                     }
@@ -135,13 +140,13 @@ fun ChatScreen(navHostController: NavHostController, chatViewModel: ChatViewMode
             onValueChange = { message = it },
             onSendClick = {
                 if (message.isNotEmpty()) {
-               //     ChatOperations().sendMessage(message, data.userID)
+                    //     ChatOperations().sendMessage(message, data.userID)
                     chatViewModel.sendMessageCall(message)
                     message = " " //clear the message after sending
                     Toast.makeText(context, "message sent", Toast.LENGTH_SHORT).show()
-                    chatViewModel.getChatNode{
-                        chatViewModel.getMessages(chatId)
-                    }
+//                    chatViewModel.getChatNode {
+//                        chatViewModel.getMessages(chatId)
+//                    }
                 }
 
             },
@@ -158,18 +163,21 @@ fun ChatScreen(navHostController: NavHostController, chatViewModel: ChatViewMode
 fun ChatRow(message: Message) {
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = if (message.senderUID==FirebaseAuth.getInstance().currentUser?.uid) Alignment.Start else Alignment.End
+        horizontalAlignment = if (message.senderUID == FirebaseAuth.getInstance().currentUser?.uid) Alignment.Start else Alignment.End
     ) {
         Box(
             modifier = Modifier
-                .background(if (message.senderUID==FirebaseAuth.getInstance().currentUser?.uid) Red else Yellow, RoundedCornerShape(100.dp)),
-            contentAlignment = if (message.senderUID==FirebaseAuth.getInstance().currentUser?.uid) Alignment.TopStart else Alignment.TopEnd
+                .background(
+                    if (message.senderUID == FirebaseAuth.getInstance().currentUser?.uid) Red else Yellow,
+                    RoundedCornerShape(100.dp)
+                ),
+            contentAlignment = if (message.senderUID == FirebaseAuth.getInstance().currentUser?.uid) Alignment.TopStart else Alignment.TopEnd
         ) {
             Text(
                 text = message.content,
                 style = TextStyle(color = Color.Black, fontSize = 15.sp),
                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 15.dp),
-                textAlign = if (message.senderUID==FirebaseAuth.getInstance().currentUser?.uid) TextAlign.Start else TextAlign.End
+                textAlign = if (message.senderUID == FirebaseAuth.getInstance().currentUser?.uid) TextAlign.Start else TextAlign.End
             )
         }
     }

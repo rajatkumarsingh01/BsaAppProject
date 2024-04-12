@@ -41,15 +41,6 @@ import com.example.bsagroupproject.ui.theme.BsagroupprojectTheme
 
 @Composable
 fun HomeScreen(chatViewModel: ChatViewModel) {
-
-    val messageList by chatViewModel.messageList.collectAsState()
-    val chatId by chatViewModel.chatId.collectAsState()
-
-        chatViewModel.getChatNode{
-            chatViewModel.getMessages(chatId)
-            Log.d("messages",messageList.toString())
-        }
-
     BsagroupprojectTheme {
         Surface(
             color = Color.White,

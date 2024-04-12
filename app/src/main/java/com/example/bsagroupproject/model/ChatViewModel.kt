@@ -11,6 +11,9 @@ import com.example.bsagroupproject.data.Message
 import com.example.bsagroupproject.data.Person
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.database.getValue
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +21,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class ChatViewModel : ViewModel() {
+    //firebase
+    val auth = FirebaseAuth.getInstance()
+    val currentUser = auth.currentUser  // for current user
+    val database = Firebase.database.reference
+
     private val _personList = MutableStateFlow(listOf<Person>())
     val personList get() = _personList
 
@@ -31,6 +39,31 @@ class ChatViewModel : ViewModel() {
 
     private val _chatId = MutableStateFlow("")
     val chatId get() = _chatId
+
+    private val _userName = MutableStateFlow("")
+    val userName get() = _userName
+
+    private val _chatNodeList=MutableStateFlow(mutableListOf<String>())
+    val chatNodeList get() =_chatNodeList
+
+
+
+
+    fun getUserName() {
+        viewModelScope.launch {
+            currentUser?.let {
+                val response = database.child("user").child(it.uid).child("userName").get()
+                val finalResponse = response.await()
+                if (finalResponse.exists()) {
+                    _userName.value = finalResponse.value.toString()
+                } else {
+                    Log.d("user_name_failure", "unable to get username")
+                }
+
+            }
+        }
+
+    }
 
 
     fun getPersonList() {
@@ -46,68 +79,121 @@ class ChatViewModel : ViewModel() {
     }
 
     // Add a function to fetch messages
+//    fun getMessages(messageId: String) {
+//        database.child("messages").child(messageId).addValueEventListener(object :
+//            ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                val messages = mutableListOf<Message>()
+//                if (snapshot.exists()) {
+//                    for (data in snapshot.children) {
+//                        val message = data.getValue(Message::class.java)
+//                        if (message != null) {
+//                            messages.add(message)
+//                        }
+//                    }
+//                    Log.d("updated_message", messages.toString())
+//                    _messageList.value = messages.toMutableList()
+//                }else{
+//                    _messageList.value=messages
+//                }
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                Log.d("receiveMessages", error.message)
+//            }
+//        })
+//    }
+
     fun getMessages(messageId: String) {
-        chatOperations.receiveMessages(messageId) { messages ->
-            _messageList.value = messages.toMutableList()
-            Log.d("message_list", messageList.value.toString())
-        }
+        database.child("messages").child(messageId).addValueEventListener(object :
+            ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val messages = mutableListOf<Message>()
+                if (snapshot.exists()) {
+                    for (data in snapshot.children) {
+                        val message = data.getValue(Message::class.java)
+                        if (message != null) {
+                            messages.add(message)
+                        }
+                    }
+                    Log.d("updated_message", messages.toString())
+                    _messageList.value = messages.toMutableList()
+                } else {
+                    _messageList.value = emptyList()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("receiveMessages", error.message)
+            }
+        })
     }
+
 
     fun getChatNode(afterGettingNode: () -> Unit) {
         chatOperations.getMessageNode() {
-            for (id in it) {
-                if (id.contains(selectedPersonProfile.value.userID)) {
-                    _chatId.value = id
-                }
-            }
-            Log.d("chat_id", chatId.value)
+            _chatNodeList.value = it.map { it.toString() }.toMutableList()
+          setChatId(selectedPersonProfile.value.userID)
             afterGettingNode()
         }
     }
+//
+//    fun setChatId(userId:String){
+//        for (id in chatNodeList.value) {
+//                if (id.contains(userId)) {
+//                    _chatId.value = id
+//                }else{
+//                    _chatId.value=""
+//                }
+//            }
+//            Log.d("set_chat_id", chatId.value)
+//    }
 
-    fun sendMessageCall(message: String) {
+
+    fun setChatId(userId: String) {
+        for (id in chatNodeList.value) {
+            if (id.contains(userId) && id.contains(selectedPersonProfile.value.userID)) {
+                _chatId.value = id
+                return
+            }
+        }
+        _chatId.value = ""
+        Log.d("set_chat_id", chatId.value)
+    }
+
+
+//    fun sendMessageCall(message: String) {
+//        getChatNode {
+//            var commonMessageId = ""
+//            if (chatId.value.isEmpty()) {
+//                commonMessageId =
+//                    FirebaseAuth.getInstance().currentUser?.uid + selectedPersonProfile.value.userID
+//            } else {
+//                commonMessageId = chatId.value
+//            }
+//            chatOperations.sendMessage(
+//                message,
+//                receiverUID = selectedPersonProfile.value.userID,
+//                commonMessageId
+//            )
+//        }
+//    }
+
+    fun sendMessageCall(messageContent: String) {
         getChatNode {
-            var commonMessageId = ""
-            if (chatId.value.isEmpty()) {
-                commonMessageId =
-                    FirebaseAuth.getInstance().currentUser?.uid + selectedPersonProfile.value.userID
+            val commonMessageId = if (chatId.value.isEmpty()) {
+                FirebaseAuth.getInstance().currentUser?.uid + selectedPersonProfile.value.userID
             } else {
-                commonMessageId = chatId.value
+                chatId.value
             }
             chatOperations.sendMessage(
-                message,
+                messageContent,
                 receiverUID = selectedPersonProfile.value.userID,
                 commonMessageId
             )
         }
     }
 
-    fun getMessagesUsingCor(messageId: String) {
-//        chatOperations.receiveMessages(messageId) { messages ->
-//            _messageList.value = messages.toMutableList()
-//            Log.d("message_list", messageList.value.toString())
-        try {
-            viewModelScope.launch {
-                val auth = FirebaseAuth.getInstance()
-                val currentUser = auth.currentUser  // for current user
-                val database = Firebase.database.reference
-                val response = database.child("messages").child(messageId).get().await()
-                val messages = mutableListOf<Message>()
-
-                response.children.forEach {
-                    val message = it.getValue(Message::class.java)
-                    message?.let {
-                        messages.add(it)
-                    }
-                }
-                _messageList.value = messages
-                Log.d("using_courutine", messageList.value.toString())
-            }
-
-        } catch (e: Exception) {
-            Log.e("getMessagesUsingCor", "Error loading messages", e)
-        }
-    }
 }
 
 

@@ -64,6 +64,7 @@ fun ChatHomeScreen(
     chatViewModel: ChatViewModel
 ) {
     val personList by chatViewModel.personList.collectAsState()
+    val userName by chatViewModel.userName.collectAsState()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -74,7 +75,7 @@ fun ChatHomeScreen(
                 .fillMaxSize()
                 .padding(top = 18.dp)
         ) {
-            HeaderOrViewStory(personList)
+            HeaderOrViewStory(personList, userName)
 
             Box(
                 modifier = Modifier
@@ -90,6 +91,7 @@ fun ChatHomeScreen(
                         .align(Alignment.TopCenter)
                         .padding(top = 15.dp)
                 )
+                Spacer(modifier = Modifier.height(12.dp))
                 LazyColumn(
                     modifier = Modifier.padding(
                         bottom = 15.dp, top = 30.dp
@@ -97,7 +99,7 @@ fun ChatHomeScreen(
                 ) {
                     items(personList) {
                         UserEachRow(it) {
-                         chatViewModel.updatePersonProfile(it)
+                            chatViewModel.updatePersonProfile(it)
                             navHostController.navigate("Chat_Screen")
                         }
                     }
@@ -116,7 +118,6 @@ fun ViewStoryLayout(personList: List<Person>) {
             AddStoryLayout()
             Spacer(modifier = Modifier.width(10.dp))
         }
-
         items(personList) {
             UserStory(person = it)
         }
@@ -197,14 +198,16 @@ fun UserEachRow(
     Box(modifier = Modifier
         .fillMaxWidth()
         .background(Color.White)
-        .noRippleEffect { onClick() }
+        .clickable{
+            onClick()
+        }
         .padding(horizontal = 20.dp, vertical = 5.dp)
     ) {
         Column {
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Image(imageVector = Icons.Filled.Person, contentDescription = "profile_image")
@@ -224,12 +227,13 @@ fun UserEachRow(
                     )
 
                 }
-
+                Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = stringResource(id = R.string.time_12_23_pm), style = TextStyle(
                         color = Gray, fontSize = 12.sp
                     )
                 )
+
 
 
             }
@@ -270,29 +274,15 @@ fun BottomSheetSwipeUp(
 }
 
 @Composable
-fun HeaderOrViewStory(personList: List<Person>) {
+fun HeaderOrViewStory(personList: List<Person>, userName: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, top = 20.dp)
+            .padding(start = 20.dp)
     ) {
-        Header()
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(text = userName)
         ViewStoryLayout(personList)
     }
 }
 
-@Composable
-fun Header() {
-    val annotatedString = buildAnnotatedString {
-        withStyle(
-            style = SpanStyle(
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.W300
-            )
-        ) {
-            append(stringResource(R.string.jayant))
-        }
-    }
-    Text(text = annotatedString)
-}

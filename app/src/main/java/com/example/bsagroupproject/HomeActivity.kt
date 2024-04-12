@@ -20,6 +20,7 @@ import com.example.bsagroupproject.ui.theme.BsagroupprojectTheme
 
 class HomeActivity : ComponentActivity() {
 
+
     private val chatViewModel by lazy {
         ViewModelProvider(this)[ChatViewModel::class.java]
     }
@@ -27,6 +28,7 @@ class HomeActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         chatViewModel.getPersonList()
+       chatViewModel.getUserName()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
