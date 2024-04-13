@@ -8,7 +8,7 @@ import com.example.bsagroupproject.model.LoginViewModel
 sealed class Screen(){
     object SignUpScreen:Screen()
     object LogInScreen:Screen()
-//    object HomeScreen:Screen()
+    object HomeScreen:Screen()
 
 }
 
