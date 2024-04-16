@@ -14,7 +14,7 @@ sealed class Screen(){
 
 object ScreenRouting{
 
-    var currentScreen:MutableState<Screen> = mutableStateOf(Screen.SignUpScreen)
+    var currentScreen:MutableState<Screen> = mutableStateOf(Screen.LogInScreen)
 
     //navigate to other screen
     fun navigateTo(destination:Screen){

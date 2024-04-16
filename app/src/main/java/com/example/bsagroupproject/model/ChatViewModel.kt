@@ -78,32 +78,6 @@ class ChatViewModel : ViewModel() {
         Log.d("selected_person", selectedPersonProfile.value.toString())
     }
 
-    // Add a function to fetch messages
-//    fun getMessages(messageId: String) {
-//        database.child("messages").child(messageId).addValueEventListener(object :
-//            ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                val messages = mutableListOf<Message>()
-//                if (snapshot.exists()) {
-//                    for (data in snapshot.children) {
-//                        val message = data.getValue(Message::class.java)
-//                        if (message != null) {
-//                            messages.add(message)
-//                        }
-//                    }
-//                    Log.d("updated_message", messages.toString())
-//                    _messageList.value = messages.toMutableList()
-//                }else{
-//                    _messageList.value=messages
-//                }
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                Log.d("receiveMessages", error.message)
-//            }
-//        })
-//    }
-
     fun getMessages(messageId: String) {
         database.child("messages").child(messageId).addValueEventListener(object :
             ValueEventListener {
@@ -137,18 +111,6 @@ class ChatViewModel : ViewModel() {
             afterGettingNode()
         }
     }
-//
-//    fun setChatId(userId:String){
-//        for (id in chatNodeList.value) {
-//                if (id.contains(userId)) {
-//                    _chatId.value = id
-//                }else{
-//                    _chatId.value=""
-//                }
-//            }
-//            Log.d("set_chat_id", chatId.value)
-//    }
-
 
     fun setChatId(userId: String) {
         for (id in chatNodeList.value) {
@@ -161,23 +123,6 @@ class ChatViewModel : ViewModel() {
         Log.d("set_chat_id", chatId.value)
     }
 
-
-//    fun sendMessageCall(message: String) {
-//        getChatNode {
-//            var commonMessageId = ""
-//            if (chatId.value.isEmpty()) {
-//                commonMessageId =
-//                    FirebaseAuth.getInstance().currentUser?.uid + selectedPersonProfile.value.userID
-//            } else {
-//                commonMessageId = chatId.value
-//            }
-//            chatOperations.sendMessage(
-//                message,
-//                receiverUID = selectedPersonProfile.value.userID,
-//                commonMessageId
-//            )
-//        }
-//    }
 
     fun sendMessageCall(messageContent: String) {
         getChatNode {

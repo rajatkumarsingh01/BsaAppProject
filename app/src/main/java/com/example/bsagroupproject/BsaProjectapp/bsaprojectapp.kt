@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.bsagroupproject.model.ChatViewModel
 import com.example.bsagroupproject.model.LoginViewModel
 import com.example.bsagroupproject.navigation.Screen
 import com.example.bsagroupproject.navigation.ScreenRouting
@@ -31,6 +32,10 @@ fun BSAapp(loginViewModel: LoginViewModel) {
                 is Screen.LogInScreen -> {
                     LogInScreen(loginViewModel)
 
+                }
+
+                is Screen.HomeScreen ->{
+                    HomeScreen(chatViewModel = ChatViewModel() )
                 }
             }
         }

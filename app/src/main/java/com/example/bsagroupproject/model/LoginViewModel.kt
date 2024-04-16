@@ -1,8 +1,10 @@
 package com.example.bsagroupproject.model
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.bsagroupproject.LoginUIEvent
 import com.example.bsagroupproject.LoginUIState
@@ -23,6 +25,8 @@ class LoginViewModel : ViewModel() {
 
     var loginInProgress = mutableStateOf(false)
 
+    val isUserLoggedIn:MutableLiveData<Boolean> =MutableLiveData()
+
 
     fun onEvent(event: LoginUIEvent) {
         when (event) {
@@ -41,6 +45,7 @@ class LoginViewModel : ViewModel() {
             is LoginUIEvent.LoginButtonClicked -> {
                 login()
             }
+
         }
         validateLoginUIDataWithRules()
     }
@@ -74,10 +79,8 @@ class LoginViewModel : ViewModel() {
             .getInstance()
             .signInWithEmailAndPassword(email,password)
             .addOnCompleteListener {
-                    Log.d("LogIn_Page","Inside LogIn Success")
                 Log.d("LogIn_Page","LogIn =${it.isSuccessful}")
                 if(it.isSuccessful){
-                    Log.d("LogIn_Page","Inside LogIn Success")
                     loginInProgress.value = false
                     _logInSuccess.value=true
                     Log.d("value","${logInSuccess.value}")
@@ -87,27 +90,46 @@ class LoginViewModel : ViewModel() {
             }
             .addOnFailureListener {
                 loginInProgress.value = false
-                Log.d("LogIn_Page","Inside LogIn Failure")
                 Log.d("LogIn_Page","Failure: ${it.message}")
             }
     }
 
-    fun logout(){
-        val firebaseAuth=FirebaseAuth.getInstance()
-        firebaseAuth.signOut()
+//    fun logout() {
+//        val firebaseAuth = FirebaseAuth.getInstance()
+//        firebaseAuth.signOut()
+//
+//        val authStateListener = FirebaseAuth.AuthStateListener {
+//            if (it.currentUser == null) {
+//                Log.d("checkingLogout", "Inside sign Out success")
+//                ScreenRouting.navigateTo(Screen.LogInScreen)
+//            } else {
+//                Log.d("checkingLogout", "Inside sign Out failure")
+//            }
+//        }
+//
+//        // Add the AuthStateListener before signing out
+//        firebaseAuth.addAuthStateListener(authStateListener)
+//    }
 
-        val authStateListner= FirebaseAuth.AuthStateListener {
-            if (it.currentUser == null) {
-                Log.d("checkingLogout", "Inside sign Out success")
-                ScreenRouting.navigateTo(Screen.LogInScreen)
-            } else {
-                Log.d("checkingLogout", "Inside sign Out failure")
-            }
+//    fun checkForActiveSession() {
+//        if (FirebaseAuth.getInstance().currentUser != null) {
+//            Log.d("active_session_check", "Valid session")
+//            isUserLoggedIn.value = true
+//        } else {
+//            Log.d("active_session_check", "User is not logged in")
+//            isUserLoggedIn.value = false
+//        }
+//    }
 
-        }
-        firebaseAuth.addAuthStateListener(authStateListner)
-
-    }
+//    val emailId: MutableLiveData<String> = MutableLiveData()
+//    fun getUserData() {
+//        FirebaseAuth.getInstance().currentUser?.also {
+//            it.email?.also { email ->
+//                emailId.value = email
+//            }
+//        }
+//
+//    }
 
 
 }
