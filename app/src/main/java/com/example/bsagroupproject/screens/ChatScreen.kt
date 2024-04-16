@@ -55,19 +55,17 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.bsagroupproject.ChatOperations
 import com.example.bsagroupproject.R
 import com.example.bsagroupproject.components.IconComponentImageVector
 import com.example.bsagroupproject.data.Message
 import com.example.bsagroupproject.data.Person
-
 import com.example.bsagroupproject.model.ChatViewModel
 import com.google.firebase.auth.FirebaseAuth
-import androidx.compose.runtime.LaunchedEffect as LaunchedEffect1
+
 
 
 @Composable
-fun ChatScreen(navHostController: NavHostController, chatViewModel: ChatViewModel) {
+fun ChatScreen(navHostController: NavHostController,chatViewModel: ChatViewModel) {
     var message by remember {
         mutableStateOf(" ")
     }
@@ -92,7 +90,7 @@ fun ChatScreen(navHostController: NavHostController, chatViewModel: ChatViewMode
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Black)
 
     ) {
         Column(
@@ -127,7 +125,7 @@ fun ChatScreen(navHostController: NavHostController, chatViewModel: ChatViewMode
                     reverseLayout = true,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(messageList.reversed()) { message ->
+                    items(messageList.reversed()) {message ->
                         ChatRow(message)
                     }
                 }
@@ -175,7 +173,7 @@ fun ChatRow(message: Message) {
         ) {
             Text(
                 text = message.content,
-                style = TextStyle(color = Color.Black, fontSize = 15.sp),
+                style = TextStyle(color = Black, fontSize = 15.sp),
                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 15.dp),
                 textAlign = if (message.senderUID == FirebaseAuth.getInstance().currentUser?.uid) TextAlign.Start else TextAlign.End
             )
@@ -191,7 +189,7 @@ fun CommonIconButton(imageVector: ImageVector) {
             .background(Yellow, CircleShape)
             .size(33.dp), contentAlignment = Alignment.Center
     ) {
-        IconComponentImageVector(icon = imageVector, size = 15.dp, tint = Color.Black)
+        IconComponentImageVector(icon = imageVector, size = 15.dp, tint = Black)
     }
 
 }
@@ -205,7 +203,7 @@ fun CommonIconButtonDrawable(
 ) {
     Box(
         modifier = Modifier
-            .background(Color.Yellow, CircleShape)
+            .background(Yellow, CircleShape)
             .size(33.dp)
             .clickable {
                 onSendClick()
@@ -214,7 +212,7 @@ fun CommonIconButtonDrawable(
     ) {
         Icon(
             imageVector, contentDescription = "",
-            tint = Color.Black,
+            tint = Black,
             modifier = Modifier.size(15.dp)
         )
     }
