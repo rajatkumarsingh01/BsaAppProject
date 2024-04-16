@@ -171,7 +171,7 @@ fun NavigationForHome(
         }
 
         composable("Appoint") {
-            AppointScreen()
+           EventScreen()
         }
 
         composable("Chat_Screen") {

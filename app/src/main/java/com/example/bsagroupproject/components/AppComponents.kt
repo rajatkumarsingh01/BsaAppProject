@@ -69,7 +69,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.bsagroupproject.data.BottomNavigationItem
 import com.example.bsagroupproject.R
 import com.example.bsagroupproject.model.LoginViewModel
-import com.example.bsagroupproject.screens.AppointScreen
 import com.example.bsagroupproject.screens.ChatHomeScreen
 import com.example.bsagroupproject.screens.HomeScreen
 import com.example.bsagroupproject.ui.theme.Primary

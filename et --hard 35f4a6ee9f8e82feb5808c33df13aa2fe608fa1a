@@ -1,0 +1,75 @@
+[33mcommit 6e066479dd2d084bab98650c17e74cc858f9190f[m[33m ([m[1;36mHEAD -> [m[1;32mrajat_code[m[33m, [m[1;31morigin/rajat_code[m[33m)[m
+Author: Rajat Kumar Singh <134076578+rajatkumarsingh01@users.noreply.github.com>
+Date:   Tue Apr 16 08:08:09 2024 +0530
+
+    rajat_code - fixin error in chat screen
+
+[33mcommit 35f4a6ee9f8e82feb5808c33df13aa2fe608fa1a[m
+Author: Rajat Kumar Singh <134076578+rajatkumarsingh01@users.noreply.github.com>
+Date:   Tue Apr 16 07:40:45 2024 +0530
+
+    rajat_code - some chnages in chat implementation
+
+[33mcommit 2e54fb07b346ff391907eeae0348bcaa2c836e26[m[33m ([m[1;31morigin/sourabh_code[m[33m)[m
+Author: Sourabh Kumar <20010001030@gateway.edu.in>
+Date:   Sat Apr 13 21:30:17 2024 +0530
+
+    added home screen route
+
+[33mcommit d728b4c3802a2489369207fed51f16b13394aaaf[m
+Author: Rajat Kumar Singh <134076578+rajatkumarsingh01@users.noreply.github.com>
+Date:   Fri Apr 12 19:34:10 2024 +0530
+
+    rajat_code -bug fixing in chatting
+
+[33mcommit 71be434b514773a5dd75512017f0df1746f389ff[m
+Author: Rajat Kumar Singh <134076578+rajatkumarsingh01@users.noreply.github.com>
+Date:   Thu Apr 11 15:09:07 2024 +0530
+
+    rajat_code - chat implementation done
+
+[33mcommit 07d75d8e0dcea1d5258ebb61f125ba34be96d65a[m
+Merge: 3c1331e ecbd080
+Author: Rajat Kumar Singh <134076578+rajatkumarsingh01@users.noreply.github.com>
+Date:   Wed Apr 10 17:17:19 2024 +0530
+
+    Merge branch 'main' of https://github.com/rajatkumarsingh01/BsaAppProject into rajat_code
+
+[33mcommit 3c1331e45ac2f565ad55a3658eea230516c92cd9[m
+Author: Rajat Kumar Singh <134076578+rajatkumarsingh01@users.noreply.github.com>
+Date:   Wed Apr 10 17:16:27 2024 +0530
+
+    rajat_code -Implementation of person and chat using firebase
+
+[33mcommit ecbd080a39d1e7b4b620a5443fa3e98639dbe43a[m[33m ([m[1;31morigin/main[m[33m)[m
+Merge: 08957b6 e1dfd4f
+Author: Rajat Kumar Singh <134076578+rajatkumarsingh01@users.noreply.github.com>
+Date:   Tue Apr 9 09:22:40 2024 +0530
+
+    Merge pull request #1 from rajatkumarsingh01/rajat_code
+    
+    rajat_code - Chat Screen complete
+
+[33mcommit e1dfd4f792cc45fec2260c1715a666754909201e[m
+Author: Rajat Kumar Singh <134076578+rajatkumarsingh01@users.noreply.github.com>
+Date:   Tue Apr 9 09:20:03 2024 +0530
+
+    rajat_code - Chat Screen complete
+
+[33mcommit 08957b65315ba9d08ff3ccad200723dd3ab9ab2d[m[33m ([m[1;32mmain[m[33m)[m
+Author: Rajat Kumar Singh <134076578+rajatkumarsingh01@users.noreply.github.com>
+Date:   Mon Apr 8 16:58:16 2024 +0530
+
+    Completed chat screen and navigation
+
+[33mcommit 8fa11bbfcabcac8368d7b6c13718c68e6f21faac[m
+Author: Rajat Kumar Singh <134076578+rajatkumarsingh01@users.noreply.github.com>
+Date:   Mon Apr 8 12:26:07 2024 +0530
+
+    Implemenation of Screen
+
+[33mcommit ede5f15104aae4d62f158537b27793a7b1aef142[m
+Author: Rajat Kumar Singh <134076578+rajatkumarsingh01@users.noreply.github.com>
+Date:   Sun Apr 7 11:01:32 2024 +0530
+
+    first commit
