@@ -68,7 +68,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bsagroupproject.R
-import com.example.bsagroupproject.data.PastEvent
 import com.example.bsagroupproject.ui.theme.PurpleGrey80
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
@@ -80,6 +79,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.input.key.Key.Companion.Calendar
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.example.bsagroupproject.data.PastEventRequest
+import com.example.bsagroupproject.data.PastEventResponse
+import com.example.bsagroupproject.model.EventViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -90,7 +94,7 @@ import kotlin.time.Duration.Companion.days
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventScreen() {
+fun EventScreen(eventViewModel: EventViewModel,  navHostController: NavHostController) {
     val events = listOf(
         "1st April 2024" to "Welcome of Shri Balaji Yatra",
         "1st April 2024" to "General Meet",
@@ -127,7 +131,7 @@ fun EventScreen() {
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.Black
             )
-            PastEvents()
+            PastEvents( navHostController)
         }
 
         FloatingActionButton(
@@ -204,34 +208,30 @@ fun UpcomingEvents(
 
 
 @Composable
-fun PastEvents() {
+fun PastEvents(  navHostController: NavHostController) {
     LazyRow(
         modifier = Modifier
             .background(color = Color(0xFFFFB38A))
     ) {
         items(pastEvents) { event ->
-            EventItem(event)
+            EventItem(pastEvents=event,  onClick = {  navHostController.navigate("Event_list_Screen/${event.year}") } )
         }
     }
 }
 
 @Composable
-fun EventItem(pastevent: PastEvent) {
+fun EventItem(pastEvents:PastEventResponse, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(16.dp)
+            .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(8.dp) // Adding a rounded corner shape
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(
-                text = pastevent.title,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
-            )
             Spacer(modifier = Modifier.height(8.dp))
             Image(
                 painter = painterResource(id = R.drawable.calendar_svgrepo_com),
@@ -239,7 +239,7 @@ fun EventItem(pastevent: PastEvent) {
                 modifier = Modifier.size(100.dp)
             )
             Text(
-                text = pastevent.year,
+                text = pastEvents.year,
                 fontSize = 14.sp,
                 color = Color.Black
             )
@@ -248,26 +248,22 @@ fun EventItem(pastevent: PastEvent) {
 }
 
 val pastEvents = listOf(
-    PastEvent(
-        title = "Past Event 1",
-        year = "2023"
+    PastEventResponse(
+        eventName = "BSA launch Program",
+        year = "2023",
     ),
-    PastEvent(
-        title = "Past Event 2",
+    PastEventResponse(
+        eventName = "Holi drive",
         year = "2022"
     ),
-    PastEvent(
-        title = "Past Event 2",
-        year = "2021"
+    PastEventResponse(
+        eventName = "Meeting",
+        year = "2021",
     ),
-    PastEvent(
-        title = "Past Event 2",
-        year = "2020"
+    PastEventResponse(
+        eventName = "Vaishakhi",
+        year = "2025"
     ),
-    PastEvent(
-        title = "Past Event 2",
-        year = "2019"
-    )
 )
 
 @Composable
@@ -430,12 +426,5 @@ private fun PreviewDateTextField() {
         label = "Date",
         imeAction = ImeAction.Done
     )
-}
-
-@Preview
-@Composable
-private fun PreviewEventScreen() {
-    EventScreen()
-
 }
 
