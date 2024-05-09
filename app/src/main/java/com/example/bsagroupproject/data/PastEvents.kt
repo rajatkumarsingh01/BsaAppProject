@@ -8,32 +8,38 @@ data class PastEventRequest(
     val queryValue: String
 )
 data class PastEventResponse(
-    val year: String,
-    val eventName: String
+    val `2021`: String="",
+    val `2022`: String="",
+    val `2023`: String="",
+    val `2024`: String=""
 )
 
-data class CreateEventRequest(
-    val uID: String,
-    val country: String,
-    val action: String,
-    val year: String,
-    val eventName: String,
-    val eventDate: String,
+data class EventDetails(
+    val `2024`: Map<String, EventItem> = emptyMap(),
+    val `2023`: Map<String, EventItem> = emptyMap(),
+    val `2022`: Map<String, EventItem> = emptyMap(),
+    val `2021`: Map<String, EventItem> = emptyMap()
+)
+
+data class EventItem(
+    val eventDT: String,
     val eventDetail: String,
-    val eventLocation: String,
-    val eventMonth: String,
-    val leadByMob: String
-)
-
-
-
-data class CreateEventResponse(
-    val eventName: String,
-    val eventDate: String,
     val eventID: String,
     val eventLocation: String,
     val eventMonth: String,
+    val eventName: String,
     val leadByMob: String,
-    val eventDetail:String
+    val year: String
+)
 
+
+data class EventResponseForImages(
+    val push1: EventItemForImages,
+    val push2: EventItemForImages,
+    val push3: EventItemForImages,
+    val push4: EventItemForImages
+)
+data class EventItemForImages(
+    val eventID: String="",
+    val eventImagePath: String=""
 )

@@ -1,11 +1,12 @@
 package com.example.bsagroupproject.screens
 
-import android.app.DatePickerDialog
-import android.text.format.DateUtils
-import android.widget.DatePicker
+import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,30 +18,24 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.ModalBottomSheetDefaults
-import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -53,57 +48,58 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bsagroupproject.R
 import com.example.bsagroupproject.ui.theme.PurpleGrey80
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerDefaults.dateFormatter
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.input.key.Key.Companion.Calendar
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavController
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
-import com.example.bsagroupproject.data.PastEventRequest
-import com.example.bsagroupproject.data.PastEventResponse
+import com.example.bsagroupproject.data.EventsForm
 import com.example.bsagroupproject.model.EventViewModel
-import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.*
-import kotlin.time.Duration.Companion.days
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventScreen(eventViewModel: EventViewModel,  navHostController: NavHostController) {
+fun EventScreen(
+    eventViewModel: EventViewModel,
+    navHostController: NavHostController
+) {
+    val pastEvents by eventViewModel.pastEventLiveData.collectAsState()
+
     val events = listOf(
         "1st April 2024" to "Welcome of Shri Balaji Yatra",
         "1st April 2024" to "General Meet",
         "1st May 2024" to "Family Picnic",
         "1st June 2024" to "Chabeel on Occasion of Nirjala Ekadshi"
     )
+
+    val localContext= LocalContext.current
 //check for form
     val isFormOpen = remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -131,7 +127,33 @@ fun EventScreen(eventViewModel: EventViewModel,  navHostController: NavHostContr
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.Black
             )
-            PastEvents( navHostController)
+
+            Row (modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+            ){
+                EventItem(pastEvents = "2021", onClick = {
+                    eventViewModel.updateSelectedYear("2021")
+                    navHostController.navigate("Event_list_Screen/${pastEvents.`2021`}")
+                })
+                EventItem(pastEvents = "2022", onClick = {
+                    eventViewModel.updateSelectedYear("2022")
+                    navHostController.navigate("Event_list_Screen/${pastEvents.`2022`}")
+                })
+                EventItem(pastEvents = "2023", onClick = {
+                    eventViewModel.updateSelectedYear("2023")
+                    navHostController.navigate("Event_list_Screen/${pastEvents.`2023`}")
+                })
+                EventItem(pastEvents = "2024", onClick = {
+                    eventViewModel.updateSelectedYear("2024")
+                    navHostController.navigate("Event_list_Screen/${pastEvents.`2024`}")
+                })
+
+            }
+
+
+
+
         }
 
         FloatingActionButton(
@@ -154,7 +176,8 @@ fun EventScreen(eventViewModel: EventViewModel,  navHostController: NavHostContr
                 sheetState = sheetState
 
             ) {
-                EventForm(isFormOpen = isFormOpen)
+                EventForm( isFormOpen = isFormOpen,
+                    eventViewModel = eventViewModel)
             }
         }
     }
@@ -206,21 +229,8 @@ fun UpcomingEvents(
     }
 }
 
-
 @Composable
-fun PastEvents(  navHostController: NavHostController) {
-    LazyRow(
-        modifier = Modifier
-            .background(color = Color(0xFFFFB38A))
-    ) {
-        items(pastEvents) { event ->
-            EventItem(pastEvents=event,  onClick = {  navHostController.navigate("Event_list_Screen/${event.year}") } )
-        }
-    }
-}
-
-@Composable
-fun EventItem(pastEvents:PastEventResponse, onClick: () -> Unit) {
+fun EventItem(pastEvents: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -239,7 +249,7 @@ fun EventItem(pastEvents:PastEventResponse, onClick: () -> Unit) {
                 modifier = Modifier.size(100.dp)
             )
             Text(
-                text = pastEvents.year,
+                text = pastEvents,
                 fontSize = 14.sp,
                 color = Color.Black
             )
@@ -247,27 +257,19 @@ fun EventItem(pastEvents:PastEventResponse, onClick: () -> Unit) {
     }
 }
 
-val pastEvents = listOf(
-    PastEventResponse(
-        eventName = "BSA launch Program",
-        year = "2023",
-    ),
-    PastEventResponse(
-        eventName = "Holi drive",
-        year = "2022"
-    ),
-    PastEventResponse(
-        eventName = "Meeting",
-        year = "2021",
-    ),
-    PastEventResponse(
-        eventName = "Vaishakhi",
-        year = "2025"
-    ),
-)
 
+@SuppressLint("UnrememberedMutableState")
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EventForm(isFormOpen: MutableState<Boolean>) {
+fun EventForm(
+    isFormOpen: MutableState<Boolean>,
+    eventViewModel: EventViewModel) {
+    val yearAndMonth = remember { mutableStateOf("") }
+    val eventName = remember { mutableStateOf("") }
+    val eventDate = remember { mutableStateOf("") }
+    val eventDetails = remember { mutableStateOf("") }
+    val eventLocation = remember { mutableStateOf("") }
+    val eventLeadMobNo = remember { mutableStateOf("") }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -281,25 +283,33 @@ fun EventForm(isFormOpen: MutableState<Boolean>) {
             textAlign = TextAlign.Center, text = "Create Event"
         )
         Spacer(modifier = Modifier.height(16.dp))
-        MyEventTextField(labelValue = "Year & Month")
+        MyEventTextField(labelValue = "Year & Month",textValue=yearAndMonth)
         Spacer(modifier = Modifier.height(16.dp))
-        MyEventTextField(labelValue = "Event Name")
+        MyEventTextField(labelValue = "Event Name", textValue = eventName)
         Spacer(modifier = Modifier.height(16.dp))
-        DateTextField(
-            value = "",
-            onValueChange = {},
-            label = "dd-mm-yyyy",
-            imeAction = ImeAction.Next,
-        )
+        DatePickerField(label = "Date", selectedDate = eventDate)
         Spacer(modifier = Modifier.height(16.dp))
-        MyEventTextField(labelValue = "Event Detail")
+        MyEventTextField(labelValue = "Event Detail", textValue = eventDetails)
         Spacer(modifier = Modifier.height(16.dp))
-        MyEventTextField(labelValue = "Event Location")
+        MyEventTextField(labelValue = "Event Location", textValue = eventLocation)
         Spacer(modifier = Modifier.height(16.dp))
-        MyEventTextField(labelValue = "Lead's Mobile Number")
+        MyEventTextField(labelValue = "Lead's Mobile Number", textValue = eventLeadMobNo)
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { isFormOpen.value = false },
+            onClick = {
+
+                eventViewModel.registerEventsInfo(
+                    EventsForm(
+                        yearAndMonth = yearAndMonth.value,
+                        eventName = eventName.value,
+                        eventDetails = eventDetails.value,
+                        eventDate = eventDate.value,
+                        eventLeadMobNo = eventLeadMobNo.value,
+                        eventLocation = eventLocation.value
+                    )
+                )
+                isFormOpen.value = false
+                      },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(40.dp)
@@ -316,12 +326,9 @@ fun EventForm(isFormOpen: MutableState<Boolean>) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyEventTextField(
-    labelValue: String
+    labelValue: String,
+    textValue: MutableState<String>
 ) {
-
-    val textValue = remember {
-        mutableStateOf("")
-    }
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
@@ -350,81 +357,111 @@ fun MyEventTextField(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
+fun DatePickerField(
     label: String,
-    imeAction: ImeAction,
-    modifier: Modifier = Modifier,
-    singleLine: Boolean = true
+    selectedDate: MutableState<String>
 ) {
-    val state = rememberDatePickerState()
+    val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedDateValue by remember { mutableStateOf(Date()) }
+
     Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.Start
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.clickable {
-            }
-        ) {
-            TextField(
-                value = state.selectedDateMillis.toString(),
-                onValueChange = { onValueChange(it) },
-                label = { Text(label) },
-                modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
-                singleLine = singleLine,
-                visualTransformation = VisualTransformation.None,
-                readOnly = true
-            )
-            val showDatePicker = remember {
-                mutableStateOf(false)
-            }
-            IconButton(
-                onClick = {
-                    showDatePicker.value = !showDatePicker.value
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CalendarToday,
-                    contentDescription = "Select date"
-                )
-            }
-
-            if (showDatePicker.value)
-                DatePickerDialog(
-                    onDismissRequest = { showDatePicker.value = !showDatePicker.value },
-                    confirmButton = {
-                        OutlinedButton(onClick = { showDatePicker.value = !showDatePicker.value }) {
-                            Text(text = "Save")
-                        }
-                    }) {
-                    DatePicker(state = state, dateFormatter = dateFormatter(), headline = {
-                        DatePickerDefaults.DatePickerHeadline(
-                            selectedDateMillis = state.selectedDateMillis,
-                            displayMode = state.displayMode,
-                            dateFormatter = dateFormatter()
-                        )
-                    }
-
+        TextField(
+            value = TextFieldValue(text = selectedDate.value),
+            onValueChange = {
+                selectedDate.value = it.text
+            },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Default),
+            readOnly = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+                .clickable { showDialog = true },
+            trailingIcon = {
+                IconButton(
+                    onClick = { showDialog = true }
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = com.google.android.material.R.drawable.material_ic_calendar_black_24dp),
+                        contentDescription = "Calendar",
                     )
-
                 }
+            }
+        )
+        if (showDialog) {
+            DatePickerDialog(
+                onDismissRequest = { showDialog = false },
+                selectedDate = selectedDate,
+                dateFormat = dateFormat,
+                selectedDateValue = selectedDateValue
+            )
         }
     }
 }
 
-@Preview
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PreviewDateTextField() {
-    DateTextField(
-        value = "",
-        onValueChange = {},
-        label = "Date",
-        imeAction = ImeAction.Done
-    )
-}
+fun DatePickerDialog(
+    onDismissRequest: () -> Unit,
+    selectedDate: MutableState<String>,
+    dateFormat: SimpleDateFormat,
+    selectedDateValue: Date
+) {
+    val datePickerState = rememberDatePickerState()
 
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties()
+    ) {
+        Surface(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                DatePicker(
+                    state = datePickerState,
+                    title = {
+                        Text("Select a date")
+                    },
+                    showModeToggle = true,
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    TextButton(onClick = { onDismissRequest() }) {
+                        Text("Cancel")
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    TextButton(
+                        onClick = {
+                            selectedDate.value = dateFormat.format(
+                                Date(
+                                    datePickerState.selectedDateMillis ?: selectedDateValue.time
+                                )
+                            )
+                            onDismissRequest()
+                        }
+                    ) {
+                        Text("Ok")
+                    }
+                }
+            }
+        }
+    }
+}
